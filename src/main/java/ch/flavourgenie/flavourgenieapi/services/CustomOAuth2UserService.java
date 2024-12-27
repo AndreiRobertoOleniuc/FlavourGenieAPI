@@ -1,6 +1,8 @@
 package ch.flavourgenie.flavourgenieapi.services;
 
 import ch.flavourgenie.flavourgenieapi.models.CustomOAuth2User;
+import ch.flavourgenie.flavourgenieapi.models.User;
+import ch.flavourgenie.flavourgenieapi.repositories.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -16,9 +18,11 @@ import java.util.Map;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final SecretKey secretKey;
+    private final UserRepository userRepository;
 
-    public CustomOAuth2UserService(SecretKey secretKey) {
+    public CustomOAuth2UserService(SecretKey secretKey, UserRepository userRepository) {
         this.secretKey = secretKey;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -31,9 +35,18 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String nameAttributeKey = getNameAttributeKey(registrationId);
         String email = getEmail(userAttributes, registrationId);
         String name = getName(userAttributes, registrationId);
+        String providerId = getUserSubject(userAttributes, registrationId);
+
+        // Save user to database
+        User user = userRepository.findByEmail(email).orElse(new User());
+        user.setEmail(email);
+        user.setName(name);
+        user.setProvider(registrationId);
+        user.setProviderId(providerId);
+        userRepository.save(user);
 
         String jwtToken = Jwts.builder()
-                .setSubject(getUserSubject(userAttributes, registrationId))
+                .setSubject(providerId)
                 .claim("email", email)
                 .claim("name", name)
                 .claim("provider", registrationId)
