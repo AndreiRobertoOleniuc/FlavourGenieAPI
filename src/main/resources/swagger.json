@@ -1,0 +1,121 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "FlavourGenie API",
+    "description": "API documentation for FlavourGenie",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Token",
+      "description": "Token API"
+    },
+    {
+      "name": "Grocery",
+      "description": "Grocery API"
+    }
+  ],
+  "paths": {
+    "/api/grocery": {
+      "get": {
+        "tags": [
+          "Grocery"
+        ],
+        "summary": "Get all Groceries",
+        "description": "Get all Groceries which were created by Users",
+        "operationId": "get-grocery",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GroceryItem"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Grocery"
+        ],
+        "summary": "Create a Grocery",
+        "description": "Create a Grocery with defined request body",
+        "operationId": "post-grocery",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GroceryItem"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/token": {
+      "get": {
+        "tags": [
+          "Token"
+        ],
+        "summary": "Retrieve Token",
+        "description": "retrieve JWT Token user logged in with",
+        "operationId": "get-token",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "GroceryItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "category": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

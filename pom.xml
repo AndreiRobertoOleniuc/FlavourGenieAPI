@@ -122,6 +122,13 @@
             <artifactId>spring-security-oauth2-resource-server</artifactId>
         </dependency>
 
+        <!-- OpenAI Swagger Dependencies -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+
     </dependencies>
     <dependencyManagement>
         <dependencies>
@@ -143,5 +150,37 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>swagger-web</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.openapitools</groupId>
+                        <artifactId>openapi-generator-maven-plugin</artifactId>
+                        <version>7.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>generate-angular-client</id>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                                <configuration>
+                                    <inputSpec>${project.basedir}/src/main/resources/swagger.json</inputSpec>
+                                    <generatorName>typescript-angular</generatorName>
+                                    <output>${project.basedir}/../flavourGenieWeb/src/generated/api</output>
+                                    <additionalProperties>ngVersion=17,apiModulePrefix=FlavourGenie</additionalProperties>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

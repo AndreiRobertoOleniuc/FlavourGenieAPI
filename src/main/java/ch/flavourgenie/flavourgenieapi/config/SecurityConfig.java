@@ -30,7 +30,7 @@ public class SecurityConfig {
                 http
                         .csrf(AbstractHttpConfigurer::disable)
                         .authorizeHttpRequests(authorize -> authorize
-                                .requestMatchers("/login/**", "/oauth2/**", "/token").permitAll()
+                                .requestMatchers("/login/**", "/oauth2/**", "/token", "/swagger-ui/**", "/v3/api-docs","/v3/api-docs/**").permitAll()
                                 .anyRequest().authenticated())
                         .oauth2Login(oauth2 -> oauth2
                                 .userInfoEndpoint(userInfo -> userInfo
